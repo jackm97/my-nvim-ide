@@ -1,38 +1,34 @@
-FROM public.ecr.aws/docker/library/rockylinux:9 as dev-tools-rocky
-
-# This will provide clipboard integration in neovim
-RUN dnf install epel-release -y
-RUN dnf install wl-clipboard xclip -y
-
-RUN dnf group install "Development Tools" -y
-RUN dnf install llvm-toolset gcc-fortran -y
-
-# ----------------------------------
-
-FROM public.ecr.aws/ubuntu/ubuntu:22.04_stable as dev-tools-ubu
-
-RUN apt update && apt install wl-clipboard xclip wget curl -y
-
-# ----------------------------------
-
-FROM dev-tools-rocky as user-init-scripts
+FROM public.ecr.aws/docker/library/rockylinux:9 as user-init-scripts
 
 COPY user-init-scripts /etc/user-init-scripts
+COPY project-manifests /etc/project-manifests
 RUN find /etc/user-init-scripts -type f -wholename "/etc/user-init-scripts/*" | xargs chmod +x
-RUN find /etc/user-init-scripts -type f -wholename "/etc/user-init-scripts/profile.d/*" | xargs -I'{}' ln -s '{}' /etc/profile.d
-RUN find /etc/user-init-scripts -type f -wholename "/etc/user-init-scripts/bin/*" | xargs -I'{}' ln -s '{}' /usr/bin
+RUN mkdir /etc/profile.d.links -p
+RUN find /etc/user-init-scripts -type f -wholename "/etc/user-init-scripts/profile.d/*" | xargs -I'{}' ln -s '{}' /etc/profile.d.links
 
-# ----------------------------------
 
-FROM user-init-scripts as my-nvim-ide:rocky9
-ENTRYPOINT ["/etc/user-init-scripts/entrypoint.sh"]
 
-# ----------------------------------
-
-FROM dev-tools-ubu as my-nvim-ide:ubu22.04
+FROM scratch as base
 COPY --from=user-init-scripts /etc/user-init-scripts /etc/user-init-scripts
-RUN find /etc/user-init-scripts -type f -wholename "/etc/user-init-scripts/*" | xargs chmod +x
-RUN find /etc/user-init-scripts -type f -wholename "/etc/user-init-scripts/profile.d/*" | xargs -I'{}' ln -s '{}' /etc/profile.d
-RUN find /etc/user-init-scripts -type f -wholename "/etc/user-init-scripts/bin/*" | xargs -I'{}' ln -s '{}' /usr/bin
+COPY --from=user-init-scripts /etc/project-manifests /etc/project-manifests
+COPY --from=user-init-scripts /etc/profile.d.links /etc/profile.d
 
 ENTRYPOINT ["/etc/user-init-scripts/entrypoint.sh"]
+
+
+FROM public.ecr.aws/docker/library/rockylinux:9 as rocky-base
+RUN dnf group install "Development Tools" -y
+RUN dnf install llvm-toolset gcc-fortran -y
+RUN dnf install which -y
+
+FROM base as my-nvim-ide:rocky9
+COPY --from=rocky-base / /
+
+
+FROM public.ecr.aws/ubuntu/ubuntu:22.04_stable as ubu-base
+RUN apt update && apt install wget curl -y
+RUN apt install build-essential clang llvm-dev -y
+
+FROM base as my-nvim-ide:ubu22.04
+COPY --from=ubu-base / /
+

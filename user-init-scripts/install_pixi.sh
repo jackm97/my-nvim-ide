@@ -1,4 +1,4 @@
-set -e 
+set -e
 set -x
 
 # install pixi
@@ -7,4 +7,3 @@ if [ ! -d ~/.pixi ]; then
   mkdir -p ~/.local/share/bash-completion/
   ~/.pixi/bin/pixi completion --shell bash | tee ~/.local/share/bash-completion/pixi.sh
 fi
-

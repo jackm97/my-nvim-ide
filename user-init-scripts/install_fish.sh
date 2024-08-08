@@ -1,4 +1,4 @@
-set -e 
+set -e
 set -x
 
 # install fish shell and some nice-to-haves
