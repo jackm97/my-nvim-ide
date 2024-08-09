@@ -18,5 +18,5 @@ fi
 pixi install --manifest-path "$PROJECT_DIR"/pixi.toml
 
 if [ ! -f "$PROJECT_DIR/CMakeLists.txt" ]; then
-  pixi run --manifest-path ./pixi.toml cmake-init --overwrite $@
+  pixi run --manifest-path "$PROJECT_DIR"/pixi.toml cmake-init --overwrite "$@"
 fi
