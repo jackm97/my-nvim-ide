@@ -1,23 +1,35 @@
 #!/bin/bash
 
 set -x
-
-echo $CR_PAT | podman login ghcr.io --username jackm97 --password-stdin
-
 set -e
 
-podman build . --target  my-nvim-ide:rocky9 -t ghcr.io/jackm97/my-nvim-ide:rocky9
+container_build=$1
+date=$(date '+%Y-%m-%d')
 
-podman tag ghcr.io/jackm97/my-nvim-ide:rocky9 ghcr.io/jackm97/my-nvim-ide:rocky-latest
-podman tag ghcr.io/jackm97/my-nvim-ide:rocky9 ghcr.io/jackm97/my-nvim-ide:latest
+# Build
+$container_build build . --file Containerfile --target base -t ghcr.io/jackm97/my-nvim-ide:base_"$date"
+$container_build build . --file Containerfile --target my-nvim-ide:rocky9 -t ghcr.io/jackm97/my-nvim-ide:rocky9_"$date"
+$container_build build . --file Containerfile --target my-nvim-ide:ubu22.04 -t ghcr.io/jackm97/my-nvim-ide:ubu22.04_"$date"
 
-podman push ghcr.io/jackm97/my-nvim-ide:rocky9 
-podman push ghcr.io/jackm97/my-nvim-ide:rocky-latest
-podman push ghcr.io/jackm97/my-nvim-ide:latest
+# Tag
+$container_build tag ghcr.io/jackm97/my-nvim-ide:base_"$date" ghcr.io/jackm97/my-nvim-ide:base
 
-podman build . --target  my-nvim-ide:ubu22.04 -t ghcr.io/jackm97/my-nvim-ide:ubu22.04 
+$container_build tag ghcr.io/jackm97/my-nvim-ide:rocky9_"$date" ghcr.io/jackm97/my-nvim-ide:rocky9
+$container_build tag ghcr.io/jackm97/my-nvim-ide:rocky9 ghcr.io/jackm97/my-nvim-ide:rocky-latest
+$container_build tag ghcr.io/jackm97/my-nvim-ide:rocky9 ghcr.io/jackm97/my-nvim-ide:latest
 
-podman tag ghcr.io/jackm97/my-nvim-ide:ubu22.04 ghcr.io/jackm97/my-nvim-ide:ubu-latest
+$container_build tag ghcr.io/jackm97/my-nvim-ide:ubu22.04_"$date" ghcr.io/jackm97/my-nvim-ide:ubu22.04
+$container_build tag ghcr.io/jackm97/my-nvim-ide:ubu22.04 ghcr.io/jackm97/my-nvim-ide:ubu-latest
 
-podman push ghcr.io/jackm97/my-nvim-ide:ubu22.04
-podman push ghcr.io/jackm97/my-nvim-ide:ubu-latest
+# Push
+$container_build push ghcr.io/jackm97/my-nvim-ide:base_"$date"
+$container_build push ghcr.io/jackm97/my-nvim-ide:base
+
+$container_build push ghcr.io/jackm97/my-nvim-ide:rocky9_"$date"
+$container_build push ghcr.io/jackm97/my-nvim-ide:rocky9
+$container_build push ghcr.io/jackm97/my-nvim-ide:rocky-latest
+$container_build push ghcr.io/jackm97/my-nvim-ide:latest
+
+$container_build push ghcr.io/jackm97/my-nvim-ide:ubu22.04_"$date"
+$container_build push ghcr.io/jackm97/my-nvim-ide:ubu22.04
+$container_build push ghcr.io/jackm97/my-nvim-ide:ubu-latest

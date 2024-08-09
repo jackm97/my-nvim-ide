@@ -1,6 +1,3 @@
-set -e
-set -x
-
 if [ ! -f ~/.container_user_is_init ]; then
   touch ~/.container_user_is_init
   touch ~/.bashrc
