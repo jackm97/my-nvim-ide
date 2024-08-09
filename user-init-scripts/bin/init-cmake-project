@@ -1,7 +1,7 @@
 #!/bin/bash
 
-set -e 
-set -x 
+set -e
+set -x
 
 PROJECT_DIR="${*: -1}"
 
@@ -15,10 +15,8 @@ else
   echo "Project manifest exists, skipping manifest creation."
 fi
 
-cd "$PROJECT_DIR"
+pixi install --manifest-path "$PROJECT_DIR"/pixi.toml
 
-pixi install --manifest-path ./pixi.toml 
-
-if [ ! -f "$PROJECT_DIR/CMakeLists.txt" ]; then 
-  pixi run --manifest-path ./pixi.toml cmake-init $@
+if [ ! -f "$PROJECT_DIR/CMakeLists.txt" ]; then
+  pixi run --manifest-path ./pixi.toml cmake-init --overwrite $@
 fi
