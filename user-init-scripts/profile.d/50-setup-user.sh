@@ -1,14 +1,8 @@
-if [ ! -f ~/.container_user_is_init ]; then
-  touch ~/.container_user_is_init
-  touch ~/.bashrc
+# if [ -z "$SKIP_USER_SETUP" ]; then
+#   export SKIP_USER_SETUP=1
+#   /usr/bin/bash --rcfile ~/.bashrc --noprofile -i /etc/user-init-scripts/setup-user.sh
+#   unset SKIP_USER_SETUP 
+# fi
 
-  bash --rcfile ~/.bashrc --noprofile -i /etc/user-init-scripts/install_pixi.sh
-  bash --rcfile ~/.bashrc --noprofile -i /etc/user-init-scripts/install_cargo.sh
-  bash --rcfile ~/.bashrc --noprofile -i /etc/user-init-scripts/install_go.sh
-  bash --rcfile ~/.bashrc --noprofile -i /etc/user-init-scripts/install_modern_dev_tools.sh
-  bash --rcfile ~/.bashrc --noprofile -i /etc/user-init-scripts/install_nvim.sh
-  bash --rcfile ~/.bashrc --noprofile -i /etc/user-init-scripts/install_fish.sh
-  bash --rcfile ~/.bashrc --noprofile -i /etc/user-init-scripts/install_dotfiles.sh
-fi
-
+export PATH="/usr/local/pixibin:$PATH"
 export PATH="/etc/user-init-scripts/bin:$PATH"

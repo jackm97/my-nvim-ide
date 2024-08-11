@@ -1,3 +1,5 @@
-#!/bin/bash --login
+#!/bin/bash --login 
 
-bash "$@"
+/etc/user-init-scripts/setup-user.sh
+
+/bin/bash "$@"

@@ -7,7 +7,7 @@ channels = ["conda-forge"]
 platforms = ["linux-64"]
 
 [tasks]
-cmake-init = "cmake-init"
+cmake-init = "cd .. && cmake-init"
 
 [dependencies]
 cmake = ">=3.30.2,<4"
