@@ -4,5 +4,4 @@ if [ -z "$SKIP_USER_SETUP" ]; then
   unset SKIP_USER_SETUP 
 fi
 
-export PATH="/usr/local/pixibin:$PATH"
 export PATH="/etc/user-init-scripts/bin:$PATH"

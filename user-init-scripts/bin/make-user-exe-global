@@ -1,0 +1,11 @@
+#!/bin/bash
+
+sudocmd="sudo"
+if [ "root" = "$(whoami)" ]; then
+  sudocmd=""
+fi
+
+find ~/.pixi/bin -type f | xargs -I{} $sudocmd ln -sf '{}' /usr/local/bin
+find ~/.cargo/bin -type f | xargs -I{} $sudocmd ln -sf '{}' /usr/local/bin 
+find ~/bin -type f | xargs -I{} $sudocmd ln -sf '{}' /usr/local/bin 
+find ~/go/bin -type f | xargs -I{} $sudocmd ln -sf '{}' /usr/local/bin
