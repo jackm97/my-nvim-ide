@@ -14,7 +14,7 @@ fi
 export PATH="/usr/local/pixibin:$PATH"
 
 if [ ! -d ~/.local/share/chezmoi ]; then
-  /etc/user-init-scripts/install_pixi.sh
+  curl -fsSL https://pixi.sh/install.sh | bash
   pixi global install git
   git clone https://github.com/jackm97/dotfiles.git ~/.local/share/chezmoi 
   pixi run --manifest-path ~/.local/share/chezmoi/pixi.toml install-user-tools
