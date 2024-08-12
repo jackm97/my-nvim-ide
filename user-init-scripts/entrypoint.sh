@@ -1,3 +1,1 @@
-#!/bin/bash --login 
-
-/bin/bash "$@"
+/bin/bash --login -c "bash $*"
